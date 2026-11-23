@@ -6,10 +6,9 @@ services:
     image: poillysky/agora-sdk:amd64
     platform: linux/amd64            # NAS x86_64
     container_name: agora-java-recorder
-    network_mode: host               # 录制 SDK 需大量 UDP(40000-41000), host 最省心; Linux/NAS 有效
+    network_mode: host               # 录制 SDK 需大量 UDP(40000-41000); host 最省心
     environment:
       TZ: Asia/Shanghai
-      CHANNEL: ${CHANNEL}            # 频道名
     volumes:
-      - ./recordings:/tmp/recording  # 录制成品落这里
-    restart: "no"
+      - ./recordings:/tmp/recording  # 录制成品落这里(视频本地保存)
+    restart: unless-stopped

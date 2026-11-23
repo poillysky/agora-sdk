@@ -1,4 +1,5 @@
 recordings/
+client/
 .env
 *.log
 .git

@@ -29,17 +29,37 @@ Agora 本地服务端录制（On-Premise Recording Java SDK）容器化工程。
 └── recordings/          # 录制输出(挂载)
 ```
 
-## 使用
+## 使用（常驻录制服务 + REST 动态开录）
 
-1. 修改 `config/.keys` 填入你的 `APP_ID` / `TOKEN`，`docker-compose.yml` 里 `CHANNEL` 填频道名。
-2. 构建并启动：
+容器跑的是 **Spring Boot web 服务**（默认端口 8080），通过 REST 接口**实时把房间信息发进去开录**，一个容器可并发录多路。
 
 ```bash
-docker compose build
-docker compose up
+docker compose up -d --build
 ```
 
-录制文件输出到 `./recordings/`。
+### 开录（带房间信息）
+```bash
+curl -X POST http://NAS_IP:8080/api/recording/startByRoom \
+  -H "Content-Type: application/json" \
+  -d '{"appid":"xxx","channel":"房间频道","token":"xxx","name":"房间名","duration":7200}'
+# 返回 {"code":0,"taskId":"...","channel":"..."}
+```
+
+### 停录
+```bash
+curl "http://NAS_IP:8080/api/recording/stop?taskId=<taskId>"
+```
+
+### 查看状态 / 全部停止
+```bash
+curl http://NAS_IP:8080/api/recording/
+curl http://NAS_IP:8080/api/recording/destroy
+```
+
+成品视频保存到宿主机 `./recordings/`（容器内 `/tmp/recording/`），
+每路一个 mp4，`recoverFile=true` 断网/崩溃也能恢复不丢。
+
+Python 对接示例见 `client/baoyu_recorder_client.py`（对接你现有 gateway 凭据系统）。
 
 ## CI/CD：自动构建到 Docker Hub
 
