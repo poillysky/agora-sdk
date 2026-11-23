@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: poillysky/agora-sdk:amd64
+    image: poillysky/agora-sdk:1.0.1
     platform: linux/amd64            # NAS x86_64
     container_name: agora-java-recorder
     network_mode: host               # 录制 SDK 需大量 UDP(40000-41000); host 最省心

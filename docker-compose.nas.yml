@@ -1,0 +1,20 @@
+# ============ NAS 部署用（直接用你构建好的镜像，不 build）============
+# 镜像: poillysky/agora-sdk:latest  (CI 已推到 Docker Hub)
+# 架构: linux/amd64 (NAS x86_64)
+# 形态: 常驻 Spring Boot web 服务, 端口 8080, 通过 REST 按房间信息动态开录
+services:
+  agora-recorder:
+    image: poillysky/agora-sdk:latest
+    platform: linux/amd64
+    container_name: agora-recorder
+    network_mode: host          # 录制 SDK 需要大量 UDP(40000-41000) 且与信令直连, host 模式最省心
+    environment:
+      TZ: Asia/Shanghai
+    volumes:
+      # 录制成品(每个 uid 一个 mp4)落到 NAS 本地目录 ./recordings
+      - ./recordings:/tmp/recording
+    restart: unless-stopped
+    # network_mode: host 时不写 ports; 若你的 NAS 不支持 host, 改成:
+    #   ports:
+    #     - "8080:8080"
+    #     - "40000-41000:40000-41000/udp"
