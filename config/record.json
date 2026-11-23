@@ -1,0 +1,40 @@
+{
+    "appId": "",
+    "token": "",
+    "channelName": "",
+    "useStringUid": false,
+    "useCloudProxy": false,
+    "userId": "0",
+    "subAllAudio": true,
+    "subAudioUserList": [],
+    "subAllVideo": true,
+    "subVideoUserList": [],
+    "subStreamType": "high",
+    "enableRecording": true,
+    "enableCapture": false,
+    "isMix": false,
+    "recordEncodedOnly": true,
+    "subscribeEncodedFrameOnly": true,
+    "layoutMode": "bestfit",
+    "maxResolutionUid": "0",
+    "recorderStreamType": "both",
+    "recorderPath": "/tmp/recording/",
+    "maxDuration": 3600,
+    "recoverFile": true,
+    "audio": {
+        "sampleRate": 16000,
+        "numOfChannels": 1
+    },
+    "video": {
+        "width": 1280,
+        "height": 720,
+        "fps": 25
+    },
+    "waterMark": [],
+    "encryption": {
+        "mode": "",
+        "key": "",
+        "salt": ""
+    },
+    "rotation": []
+}

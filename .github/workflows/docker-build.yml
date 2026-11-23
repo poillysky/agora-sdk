@@ -1,0 +1,61 @@
+name: Build and Push Docker Image
+
+# 触发：
+#  - 推送到 main 分支
+#  - 打 tag (v*)
+#  - 手动触发
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+env:
+  # Docker Hub 镜像名（用户名/仓库名）。可在仓库 Settings > Variables 覆盖
+  IMAGE_NAME: poillysky/agora-sdk
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU (跨架构构建支持)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        # 需要在仓库 Settings > Secrets 配置 DOCKERHUB_USERNAME / DOCKERHUB_TOKEN
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          # 双架构：arm64(Mac/ARM服务器) + amd64(x86 Linux)。注意 .so/jar 是 arm64 版，
+          # 若需真正的 amd64 运行，需分别在 Dockerfile 里按 TARGETARCH 准备对应原生库。
+          platforms: linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

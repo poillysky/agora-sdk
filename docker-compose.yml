@@ -1,0 +1,15 @@
+services:
+  agora-java-recorder:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: agora-java-recorder:arm64
+    platform: linux/arm64            # Mac(Apple Silicon) 原生; 若部署 amd64 服务器改成 linux/amd64 并换 x86_64 .so+jar
+    container_name: agora-java-recorder
+    network_mode: host               # 录制 SDK 需大量 UDP(40000-41000), host 最省心; Linux 主机有效
+    environment:
+      TZ: Asia/Shanghai
+      CHANNEL: ${CHANNEL}            # 密语频道名
+    volumes:
+      - ./recordings:/tmp/recording  # 录制成品落这里
+    restart: "no"
