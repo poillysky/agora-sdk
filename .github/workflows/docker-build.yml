@@ -51,9 +51,9 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          # 双架构：arm64(Mac/ARM服务器) + amd64(x86 Linux)。注意 .so/jar 是 arm64 版，
-          # 若需真正的 amd64 运行，需分别在 Dockerfile 里按 TARGETARCH 准备对应原生库。
-          platforms: linux/arm64
+          # 目标架构：linux/amd64 (x86_64 NAS/Linux 服务器)。
+          # 本仓库 .so/jar 均为 x86_64 版。
+          platforms: linux/amd64
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

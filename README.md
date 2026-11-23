@@ -5,7 +5,7 @@ Agora 本地服务端录制（On-Premise Recording Java SDK）容器化工程。
 
 ## 特性
 
-- 基于 `Agora-Recording-Java-SDK` v4.4.151（arm64 原生库）
+- 基于 `Agora-Recording-Java-SDK` v4.4.151（x86_64 原生库，适配 amd64 NAS/Linux）
 - 已内置编译好的 `agora-example.jar`，容器无需再编译
 - 录制参数保障「断网不丢、音画不错位、画质无损」：
   - `recoverFile: true` —— 崩溃/断流也能恢复 h264+aac 原始文件，不丢片
@@ -25,7 +25,7 @@ Agora 本地服务端录制（On-Premise Recording Java SDK）容器化工程。
 │   └── .keys            # APP_ID / TOKEN
 ├── lib/
 │   ├── agora-example.jar
-│   └── native/linux/aarch64/*.so        # arm64 原生库
+│   └── native/linux/x86_64/*.so         # x86_64 原生库
 └── recordings/          # 录制输出(挂载)
 ```
 
@@ -56,10 +56,10 @@ docker compose up
 
 ## 运行要求
 
-- 平台：`linux/arm64`（Apple Silicon / ARM Linux）。如需 amd64，替换为 x86_64 版 jar + `.so`。
+- 平台：`linux/amd64`（x86_64 NAS / Linux 服务器）。本仓库 jar 与 `.so` 均为 x86_64 版。
 - 网络：录制 SDK 需要绑定大量 UDP 端口（40000–41000）并访问 `.agora.io` / `.agoralab.co`。
-  - Linux 主机建议 `network_mode: host`
-  - macOS Docker Desktop 不支持 host 网络，需改用端口段映射（`ports: 40000-41000/udp`）
+  - NAS/Linux 主机用 `network_mode: host`（群晖/威联通等 NAS 的 Docker 原生支持）
+
 - Token 有时效，长录制需定时刷新 token 重启。
 
 ## 安全提示
